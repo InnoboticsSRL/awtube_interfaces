@@ -1,0 +1,14 @@
+#Goal
+geometry_msgs/PoseArray poses_array
+string[] pipelines
+float32[] blend_radius
+float32[] vel_scales
+float32[] acc_scales
+---
+# Result
+string result 
+---
+#Feedback
+float64 percentage
+
+

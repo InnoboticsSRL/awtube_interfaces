@@ -1,0 +1,2 @@
+# String array
+string[] strings
