@@ -1,0 +1,7 @@
+# Request
+trajectory_msgs/JointTrajectoryPoint target
+---
+# Result
+bool[] is_target_reached
+---
+# Feedback
