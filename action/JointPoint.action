@@ -1,4 +1,5 @@
 # Request
+string mode_of_op
 trajectory_msgs/JointTrajectoryPoint target
 ---
 # Result
