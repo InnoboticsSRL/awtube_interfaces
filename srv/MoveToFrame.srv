@@ -1,0 +1,4 @@
+string frame_id "" # frame id to use
+float64 d # distance from rotated frame
+---
+bool success # return true if command sent to moveit
