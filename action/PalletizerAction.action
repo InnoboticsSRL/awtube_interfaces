@@ -1,0 +1,9 @@
+# Define a task string id
+string task_name
+---
+# Define the result that will be published after the action execution ends.
+bool done
+---
+# Define a feedback message that will be published during action execution.
+float32 percent_complete
+string feedback

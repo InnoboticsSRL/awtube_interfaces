@@ -14,6 +14,7 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "action/JointPoint.action"
   "action/Task.action"
+  "action/PalletizerAction.action"
   "srv/MoveToFrame.srv"
   DEPENDENCIES builtin_interfaces trajectory_msgs
 )
