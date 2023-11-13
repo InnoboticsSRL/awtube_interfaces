@@ -1,3 +1,5 @@
+bool plan
+bool execute
 ---
 # Define the result that will be published after the action execution ends.
 bool success
