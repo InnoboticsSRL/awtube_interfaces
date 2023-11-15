@@ -1,0 +1,7 @@
+moveit_msgs/RobotTrajectory[] trajs
+int16 id_layer
+---
+moveit_msgs/RobotTrajectory[] trajs
+int16 id_layer
+bool success
+string log

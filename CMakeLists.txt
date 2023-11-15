@@ -7,27 +7,31 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(trajectory_msgs REQUIRED)
-find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
+find_package(builtin_interfaces REQUIRED)
+find_package(trajectory_msgs REQUIRED)
+find_package(moveit_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+
+set(THIS_PACKAGE_DEPS
+  builtin_interfaces 
+  trajectory_msgs 
+  moveit_msgs
+  geometry_msgs
+)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "action/JointPoint.action"
   "action/Task.action"
   "action/PalletizerAction.action"
   "srv/MoveToFrame.srv"
-  DEPENDENCIES builtin_interfaces trajectory_msgs
+  "srv/LayerBoxes.srv"
+  "srv/LayerTrajs.srv"
+  DEPENDENCIES ${THIS_PACKAGE_DEPS}
 )
-
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # uncomment the line when a copyright and license is not present in all source files
-  #set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # uncomment the line when this package is not in a git repo
-  #set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
 
