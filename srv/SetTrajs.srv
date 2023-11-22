@@ -1,8 +1,10 @@
 # enum for id layer
 int8 ALL_LAYERS=-1
 
-uint8 id_pallet
-int8 id_layer
+uint8 id_pick_pallet
+uint8 id_place_pallet
+int8 id_pick_layer
+int8 id_place_layer
 moveit_msgs/RobotTrajectory[] trajs
 ---
 bool success
