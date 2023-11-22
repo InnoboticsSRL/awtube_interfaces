@@ -1,3 +1,4 @@
+int16 id_pallet
 int16 id_layer
 ---
 geometry_msgs/Pose[] pick_box_poses

@@ -1,4 +1,5 @@
 moveit_msgs/RobotTrajectory[] trajs
+int16 id_pallet
 int16 id_layer
 ---
 moveit_msgs/RobotTrajectory[] trajs
