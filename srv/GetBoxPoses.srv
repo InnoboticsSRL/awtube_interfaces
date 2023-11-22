@@ -1,0 +1,7 @@
+# enum for id layer
+int8 ALL_LAYERS=-1
+
+uint8 id_pallet
+int8 id_layer
+---
+geometry_msgs/Pose[] box_poses

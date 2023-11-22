@@ -1,5 +1,0 @@
-int16 id_pallet
-int16 id_layer
----
-geometry_msgs/Pose[] pick_box_poses
-geometry_msgs/Pose[] place_box_poses

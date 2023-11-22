@@ -25,8 +25,9 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "action/Task.action"
   "action/PalletizerAction.action"
   "srv/MoveToFrame.srv"
-  "srv/LayerBoxes.srv"
-  "srv/LayerTrajs.srv"
+  "srv/GetBoxPoses.srv"
+  "srv/GetTrajs.srv"
+  "srv/SetTrajs.srv"
   DEPENDENCIES ${THIS_PACKAGE_DEPS}
 )
 
