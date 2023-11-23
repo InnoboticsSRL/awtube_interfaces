@@ -10,7 +10,7 @@ uint8 id_pick_pallet
 uint8 id_place_pallet
 int8 id_pick_layer
 int8 id_place_layer
-int8 num_layers
+int8 num_layers 1
 int8 task_type
 ---
 # Result
