@@ -28,6 +28,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/GetBoxPoses.srv"
   "srv/GetTrajs.srv"
   "srv/SetTrajs.srv"
+  "srv/GetAttrAll.srv"
+  "srv/SetAttrAll.srv"
   DEPENDENCIES ${THIS_PACKAGE_DEPS}
 )
 
