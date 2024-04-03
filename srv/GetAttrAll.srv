@@ -1,5 +1,5 @@
 uint16 clas
 uint8 instance
 ---
-uint8 result_code
+string error
 uint16[] result
