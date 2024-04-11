@@ -30,6 +30,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/SetTrajs.srv"
   "srv/GetAttrAll.srv"
   "srv/SetAttrAll.srv"
+  "srv/SetDout.srv"
   DEPENDENCIES ${THIS_PACKAGE_DEPS}
 )
 
