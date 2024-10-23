@@ -1,0 +1,38 @@
+name: Build and Package ROS 2 PKG
+
+on:
+  push:
+    branches:
+      - humble
+  pull_request:
+    branches:
+      - humble
+
+jobs:
+  build_and_package:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout private repository
+      uses: actions/checkout@v3
+      with:
+        repository: InnoboticsSRL/awtube_interfaces
+
+    - name: Setup ROS humble
+      uses: ros-tooling/setup-ros@v0.7
+      with:
+        required-ros-distributions: humble
+        
+    - name: Compile pkg
+      uses: ros-tooling/action-ros-ci@v0.3
+      with:
+        package-name: ${{ github.event.repository.name }}
+        target-ros2-distro: humble
+        skip-tests: true
+        # skip-rosdep-install: true
+        # rosdep-check: true
+        # vcs-repo-file-url: https://raw.githubusercontent.com/ros2/ros2/jazzy/ros2.repos
+    - uses: actions/upload-artifact@v3
+      with:
+        name: colcon-logs
+        path: ${{ steps.action_ros_ci_step.outputs.ros-workspace-directory-name }}/log
+      if: always() # upload the logs even when the build fails
