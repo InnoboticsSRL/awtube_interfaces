@@ -22,9 +22,13 @@ jobs:
         with:
           required-ros-distributions: humble
 
-      # Step 3: Install dependencies (if any)
+      # Step 3: Install dependencies
       - name: Install dependencies
-        run: sudo apt update && sudo apt install -y python3-colcon-common-extensions
+        run: |
+          sudo apt update
+          sudo apt install -y python3-colcon-common-extensions
+          pip uninstall -y em || true
+          pip install empy
 
       # Step 4: Set up workspace and copy source code
       - name: Set up workspace
@@ -59,4 +63,3 @@ jobs:
         with:
           name: debian-package
           path: ~/ros_ws/*.deb
-
