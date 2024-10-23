@@ -12,7 +12,7 @@ jobs:
   build_and_package:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout private repository
+    - name: Checkout repository
       uses: actions/checkout@v3
       with:
         repository: InnoboticsSRL/awtube_interfaces
@@ -31,8 +31,16 @@ jobs:
         # skip-rosdep-install: true
         # rosdep-check: true
         # vcs-repo-file-url: https://raw.githubusercontent.com/ros2/ros2/jazzy/ros2.repos
-    - uses: actions/upload-artifact@v3
+        
+    - name: Upload compilation logs
+      uses: actions/upload-artifact@v3
       with:
         name: colcon-logs
         path: ${{ steps.action_ros_ci_step.outputs.ros-workspace-directory-name }}/log
       if: always() # upload the logs even when the build fails
+
+    - name: Upload compiled package
+      uses: actions/upload-artifact@v3
+      with:
+        name: compiled-package
+        path: ${{ steps.build_step.outputs.ros-workspace-directory-name }}/install
