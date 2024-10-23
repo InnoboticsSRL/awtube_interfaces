@@ -22,36 +22,18 @@ jobs:
       with:
         required-ros-distributions: humble
 
-    - name: Set up ROS workspace
-      run: |
-        mkdir -p ~/ros_ws/src
-        cp -r . ~/ros_ws/src/
-        cd ~/ros_ws
+    - uses: ros-tooling/action-ros-ci@v0.3
+      with:
+        package-name: awtube_interfaces
+        target-ros2-distro: humble
 
-    - name: Compile package
-      run: |
-        cd ~/ros_ws
-        colcon build --packages-select ${{ github.event.repository.name }} --symlink-install
-      env:
-        TARGET_ROS2_DISTRO: humble
+    - name: Build Debian packages
+      uses: ichiro-its/ros2-build-debian-action@main
+      with:
+        ros2-distro: rolling
 
-    # Step to generate the Debian package (.deb)
-    - name: Generate Debian package
-      run: |
-        cd ~/ros_ws/install
-        mkdir -p DEBIAN
-        echo "Package: ${{ github.event.repository.name }}" > DEBIAN/control
-        echo "Version: 1.0" >> DEBIAN/control
-        echo "Section: misc" >> DEBIAN/control
-        echo "Priority: optional" >> DEBIAN/control
-        echo "Architecture: all" >> DEBIAN/control
-        echo "Maintainer: Your Name <your.email@example.com>" >> DEBIAN/control
-        echo "Description: ROS 2 package ${{ github.event.repository.name }}" >> DEBIAN/control
-        dpkg-deb --build ~/ros_ws/install ~/ros_ws/${{ github.event.repository.name }}.deb
-
-    # Upload the generated .deb file as an artifact
     - name: Upload Debian package
       uses: actions/upload-artifact@v3
       with:
         name: debian-package
-        path: ~/ros_ws/${{ github.event.repository.name }}.deb
+        path:  dist/awtube_interfaces.deb
