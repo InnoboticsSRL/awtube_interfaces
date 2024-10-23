@@ -12,10 +12,51 @@ jobs:
   build-debian-packages:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout this repository
-        uses: actions/checkout@v2.3.4
-      - name: Build Debian packages
-        uses: ichiro-its/ros2-build-debian-action@main
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up ROS 2 (Humble)
+      - name: Setup ROS 2 humble
+        uses: ros-tooling/setup-ros@v0.3
         with:
-          ros2-distro: rolling
-          # output-dir: output
+          required-ros-distributions: humble
+
+      # Step 3: Install dependencies (if any)
+      - name: Install dependencies
+        run: sudo apt update && sudo apt install -y python3-colcon-common-extensions
+
+      # Step 4: Set up workspace and copy source code
+      - name: Set up workspace
+        run: |
+          mkdir -p ~/ros_ws/src
+          cp -r . ~/ros_ws/src/
+          cd ~/ros_ws
+
+      # Step 5: Build the package with colcon
+      - name: Build the ROS package
+        run: |
+          cd ~/ros_ws
+          colcon build --packages-select ${{ github.event.repository.name }}
+
+      # Step 6: Create a Debian package
+      - name: Create Debian package
+        run: |
+          cd ~/ros_ws/install
+          mkdir -p DEBIAN
+          echo "Package: ${{ github.event.repository.name }}" > DEBIAN/control
+          echo "Version: 1.0" >> DEBIAN/control
+          echo "Section: misc" >> DEBIAN/control
+          echo "Priority: optional" >> DEBIAN/control
+          echo "Architecture: all" >> DEBIAN/control
+          echo "Maintainer: Your Name <your.email@example.com>" >> DEBIAN/control
+          echo "Description: ROS 2 package ${{ github.event.repository.name }}" >> DEBIAN/control
+          dpkg-deb --build ~/ros_ws/install ~/ros_ws/${{ github.event.repository.name }}.deb
+
+      # Step 7: Upload the generated Debian package as an artifact
+      - name: Upload Debian package
+        uses: actions/upload-artifact@v3
+        with:
+          name: debian-package
+          path: ~/ros_ws/*.deb
+
