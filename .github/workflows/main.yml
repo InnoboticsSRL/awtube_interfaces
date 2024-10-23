@@ -9,48 +9,17 @@ on:
       - humble
 
 jobs:
-  build-and-package:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup ROS 2
-        run: |
-          docker pull ros:humble-ros-base
-          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace ros:humble-ros-base bash -c "
-          apt-get update && \
-          apt-get install -y python3-colcon-common-extensions && \
-          apt-get install -y python3-pip && \
-          pip3 install -U setuptools
-          "
+      - name: Containerized Build
+        uses: ./.ci/build
 
-      - name: Install dependencies
-        run: |
-          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace ros:humble-ros-base bash -c "
-          apt-get update && \
-          rosdep update && \
-          rosdep install -y --from-paths src --ignore-src --rosdistro humble
-          "
-
-      - name: Build the package
-        run: |
-          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace ros:humble-ros-base bash -c "
-          source /opt/ros/humble/setup.bash && \
-          colcon build --symlink-install
-          "
-
-      - name: Create Debian package
-        run: |
-          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace ros:humble-ros-base bash -c "
-          source /opt/ros/humble/setup.bash && \
-          cd build/your_package_name && \
-          ament debian --create-package
-          "
-
-      - name: Upload Debian package
-        uses: actions/upload-artifact@v3
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: debian-packages
-          path: |
-            build/your_package_name/*.deb
+          name: workspace_artifacts
+          path: ${{ github.workspace }}
