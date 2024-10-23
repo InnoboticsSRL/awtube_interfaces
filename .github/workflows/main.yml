@@ -9,57 +9,48 @@ on:
       - humble
 
 jobs:
-  build-debian-packages:
+  build-and-package:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up ROS 2 (Humble)
-      - name: Setup ROS 2 humble
-        uses: ros-tooling/setup-ros@v0.3
-        with:
-          required-ros-distributions: humble
+      - name: Setup ROS 2
+        run: |
+          docker pull ros:humble-ros-base
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace ros:humble-ros-base bash -c "
+          apt-get update && \
+          apt-get install -y python3-colcon-common-extensions && \
+          apt-get install -y python3-pip && \
+          pip3 install -U setuptools
+          "
 
-      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
-          sudo apt update
-          sudo apt install -y python3-colcon-common-extensions
-          pip uninstall -y em || true
-          pip install empy
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace ros:humble-ros-base bash -c "
+          apt-get update && \
+          rosdep update && \
+          rosdep install -y --from-paths src --ignore-src --rosdistro humble
+          "
 
-      # Step 4: Set up workspace and copy source code
-      - name: Set up workspace
+      - name: Build the package
         run: |
-          mkdir -p ~/ros_ws/src
-          cp -r . ~/ros_ws/src/
-          cd ~/ros_ws
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace ros:humble-ros-base bash -c "
+          source /opt/ros/humble/setup.bash && \
+          colcon build --symlink-install
+          "
 
-      # Step 5: Build the package with colcon
-      - name: Build the ROS package
-        run: |
-          cd ~/ros_ws
-          colcon build --packages-select ${{ github.event.repository.name }}
-
-      # Step 6: Create a Debian package
       - name: Create Debian package
         run: |
-          cd ~/ros_ws/install
-          mkdir -p DEBIAN
-          echo "Package: ${{ github.event.repository.name }}" > DEBIAN/control
-          echo "Version: 1.0" >> DEBIAN/control
-          echo "Section: misc" >> DEBIAN/control
-          echo "Priority: optional" >> DEBIAN/control
-          echo "Architecture: all" >> DEBIAN/control
-          echo "Maintainer: Your Name <your.email@example.com>" >> DEBIAN/control
-          echo "Description: ROS 2 package ${{ github.event.repository.name }}" >> DEBIAN/control
-          dpkg-deb --build ~/ros_ws/install ~/ros_ws/${{ github.event.repository.name }}.deb
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace ros:humble-ros-base bash -c "
+          source /opt/ros/humble/setup.bash && \
+          cd build/your_package_name && \
+          ament debian --create-package
+          "
 
-      # Step 7: Upload the generated Debian package as an artifact
       - name: Upload Debian package
         uses: actions/upload-artifact@v3
         with:
-          name: debian-package
-          path: ~/ros_ws/*.deb
+          name: debian-packages
+          path: |
+            build/your_package_name/*.deb
