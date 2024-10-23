@@ -4,21 +4,29 @@ FROM ros:humble-ros-base
 RUN apt update && apt install -y python3-colcon-common-extensions git ros-dev-tools 
 
 # install tools
-RUN apt update && \
-    apt install -y autoconf libtool \
+RUN apt update && apt install -y \
+    python3-colcon-common-extensions \
+    git \
+    ros-dev-tools \
+    autoconf \
+    libtool \
     python3-vcstool \
     tmux \
     vim \
-    python3-pip
+    python3-pip \
+    fakeroot \
+    python3-bloom \
+    build-essential \
+    debhelper
 
 # use only bash shell
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # workdir
 WORKDIR /ws
-
-# copy all in src
-ADD . src/
+RUN mkdir -p /ws/src && \
+    cd /ws/src && \
+    git clone -b humble https://github.com/InnoboticsSRL/awtube_interfaces.git
 
 # install rosdep
 RUN rosdep init; rosdep update; apt update
@@ -26,3 +34,9 @@ RUN apt update; rosdep install --from-paths src --ignore-src -r -y --rosdistro=h
 
 # compile
 RUN . /opt/ros/humble/setup.sh; colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
+
+# Generate Debian packaging files using bloom and build the Debian package
+RUN source /opt/ros/humble/setup.sh && \
+    cd src/awtube_interfaces && \
+    bloom-generate rosdebian && \
+    fakeroot debian/rules binary
