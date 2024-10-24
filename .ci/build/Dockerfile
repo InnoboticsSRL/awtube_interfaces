@@ -40,3 +40,5 @@ RUN source /opt/ros/humble/setup.sh && \
     cd src/awtube_interfaces && \
     bloom-generate rosdebian && \
     fakeroot debian/rules binary
+
+COPY src/*deb /github/workspace
