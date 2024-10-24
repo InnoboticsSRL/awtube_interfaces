@@ -2,6 +2,7 @@
 set -e
 
 # Create a .deb package
+rosdep update && \
 source /opt/ros/humble/setup.sh && \
 bloom-generate rosdebian && \
 fakeroot debian/rules binary
