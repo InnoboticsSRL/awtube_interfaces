@@ -9,4 +9,4 @@ bloom-generate rosdebian && \
 fakeroot debian/rules binary
 
 # Move any generated .deb packages to the GitHub workspace
-mv ../*.deb /github/workspace/deb
+mv ../*.deb /github/workspace/deb/
