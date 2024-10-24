@@ -41,4 +41,4 @@ RUN source /opt/ros/humble/setup.sh && \
     bloom-generate rosdebian && \
     fakeroot debian/rules binary
 
-COPY src/*deb /github/workspace
+COPY /ws/src/*.deb /github/workspace
