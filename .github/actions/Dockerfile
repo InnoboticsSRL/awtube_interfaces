@@ -41,4 +41,9 @@ RUN source /opt/ros/humble/setup.sh && \
     bloom-generate rosdebian && \
     fakeroot debian/rules binary
 
-RUN cp src/*.deb /github/workspace
+# Copy the entrypoint script into the container
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Specify the entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
