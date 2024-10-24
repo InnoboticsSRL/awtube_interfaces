@@ -23,23 +23,23 @@ RUN apt update && apt install -y \
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # workdir
-WORKDIR /ws
-RUN mkdir -p /ws/src && \
-    cd /ws/src && \
-    git clone -b humble https://github.com/InnoboticsSRL/awtube_interfaces.git
+# WORKDIR /ws
+# RUN mkdir -p /ws/src && \
+#     cd /ws/src && \
+#     git clone -b humble https://github.com/InnoboticsSRL/awtube_interfaces.git
 
 # install rosdep
-RUN rosdep init; rosdep update; apt update
-RUN apt update; rosdep install --from-paths src --ignore-src -r -y --rosdistro=humble
+# RUN rosdep init; rosdep update; apt update
+# RUN apt update; rosdep install --from-paths src --ignore-src -r -y --rosdistro=humble
 
 # compile
-RUN . /opt/ros/humble/setup.sh; colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
+# RUN . /opt/ros/humble/setup.sh; colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 # Generate Debian packaging files using bloom and build the Debian package
-RUN source /opt/ros/humble/setup.sh && \
-    cd src/awtube_interfaces && \
-    bloom-generate rosdebian && \
-    fakeroot debian/rules binary
+# RUN source /opt/ros/humble/setup.sh && \
+#     cd src/awtube_interfaces && \
+#     bloom-generate rosdebian && \
+#     fakeroot debian/rules binary
 
 # Copy the entrypoint script into the container
 COPY entrypoint.sh /entrypoint.sh
