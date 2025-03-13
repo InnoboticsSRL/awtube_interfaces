@@ -28,6 +28,5 @@ jobs:
             🚀 The build on `humble` has completed successfully!
             This is an automatic pull request to merge `humble` with `humble-release` to release the `.deb` package.
           base: humble-release  # Target branch
-          head: humble  # Source branch
+          branch: humble        # Source branch
           draft: true
-          auto-merge: false      
