@@ -1,42 +1,19 @@
-name: Build and Publish ROS 2 Package
+name: Humble Release
 
 on:
   push:
     branches:
-      - humble
-  pull_request:
-    branches:
-      - humble
+      - humble-release
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Containerized Build
-        uses: ./.github/actions/build_deb
-
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: debian_package
-          path: ${{ github.workspace }}/deb
-
-  release:
-    needs: build
-    if: success()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: debian_package
-          path: deb
+        uses: ./.github/actions/build_deb 
 
       - name: Get Package Info
         id: package_info
@@ -51,7 +28,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ env.FILE_PATH }}
+          files: deb/*.deb
           tag_name: v${{ env.VERSION }}
           name: "${{ env.PACKAGE_NAME }} v${{ env.VERSION }}"
           body: "Release of ${{ env.PACKAGE_NAME }} version ${{ env.VERSION }}"
