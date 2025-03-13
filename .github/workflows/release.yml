@@ -1,4 +1,4 @@
-name: Humble Release
+name: Release
 
 on:
   push:
