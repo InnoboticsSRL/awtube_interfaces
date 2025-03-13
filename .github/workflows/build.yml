@@ -17,17 +17,3 @@ jobs:
 
       - name: Containerized Build
         uses: ./.github/actions/build
-
-      - name: Create Pull Request from humble to humble-release
-        if: success()
-        uses: peter-evans/create-pull-request@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Merge changes from humble to humble-release"
-          body: |
-            🚀 The build on `humble` has completed successfully!
-            This is an automatic pull request to merge `humble` with `humble-release` to release the `.deb` package.
-          base: humble-release  # Target branch
-          head: humble  # Source branch
-          draft: true
-          auto-merge: false      
