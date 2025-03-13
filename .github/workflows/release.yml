@@ -1,13 +1,16 @@
 name: Release
 
 on:
-  push:
+  pull_request:
     branches:
       - humble-release
+    types:
+      - closed
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.merged == true }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
