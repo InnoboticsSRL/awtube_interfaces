@@ -1,4 +1,4 @@
-name: Build and Package ROS 2 PKG
+name: Build and Publish ROS 2 Package
 
 on:
   push:
@@ -23,3 +23,39 @@ jobs:
         with:
           name: debian_package
           path: ${{ github.workspace }}/deb
+
+  release:
+    needs: build
+    if: success()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: debian_package
+          path: deb
+
+      - name: Get Package Info
+        id: package_info
+        run: |
+          FILE_PATH=$(ls deb/*.deb | head -n 1)
+          VERSION=$(dpkg-deb -f "$FILE_PATH" Version)
+          PACKAGE_NAME=$(dpkg-deb -f "$FILE_PATH" Package)
+          echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "FILE_PATH=$FILE_PATH" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.FILE_PATH }}
+          tag_name: v${{ env.VERSION }}
+          name: "${{ env.PACKAGE_NAME }} v${{ env.VERSION }}"
+          body: "Release of ${{ env.PACKAGE_NAME }} version ${{ env.VERSION }}"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
