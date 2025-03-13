@@ -22,7 +22,7 @@ jobs:
         if: success()
         uses: peter-evans/create-pull-request@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.SECRET }}
           title: "Merge changes from humble to humble-release"
           body: |
             🚀 The build on `humble` has completed successfully!
